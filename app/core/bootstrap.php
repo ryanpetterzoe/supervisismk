@@ -95,6 +95,12 @@ function ensure_app_schema(){
         try { db()->exec("ALTER TABLE school_identity ADD COLUMN header_color VARCHAR(20) NULL DEFAULT '#2563eb'"); } catch(Throwable $e) {}
         try { db()->exec("ALTER TABLE school_identity ADD COLUMN accent_color VARCHAR(20) NULL DEFAULT '#7c3aed'"); } catch(Throwable $e) {}
         try { db()->exec("ALTER TABLE school_identity ADD COLUMN app_name VARCHAR(120) NULL DEFAULT 'Supervisi Akademik'"); } catch(Throwable $e) {}
+        // v14: landing page customization
+        try { db()->exec("ALTER TABLE school_identity ADD COLUMN banner_path VARCHAR(255) NULL"); } catch(Throwable $e) {}
+        try { db()->exec("ALTER TABLE school_identity ADD COLUMN landing_title VARCHAR(255) NULL DEFAULT 'Monitoring supervisi, instrumen, dan laporan dalam satu dashboard.'"); } catch(Throwable $e) {}
+        try { db()->exec("ALTER TABLE school_identity ADD COLUMN landing_subtitle VARCHAR(255) NULL DEFAULT 'Aplikasi Supervisi Akademik Guru SMK'"); } catch(Throwable $e) {}
+        try { db()->exec("ALTER TABLE school_identity ADD COLUMN landing_cta_text VARCHAR(100) NULL DEFAULT 'Masuk Sistem'"); } catch(Throwable $e) {}
+        try { db()->exec("ALTER TABLE school_identity ADD COLUMN landing_footer_text VARCHAR(255) NULL DEFAULT ''"); } catch(Throwable $e) {}
 
         db()->exec("CREATE TABLE IF NOT EXISTS instrument_downloads (
             id INT AUTO_INCREMENT PRIMARY KEY,

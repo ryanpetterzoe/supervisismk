@@ -345,3 +345,13 @@ tr:hover td { background-color: var(--primary-light); }
   body { background: #fff !important; color: #000 !important; }
   .card { box-shadow: none; border: 1px solid #ccc; }
 }
+
+
+/* ══ LANDING HERO WITH BANNER ══ */
+.landing-hero[style*="background-image"] { border-radius: 0; }
+.landing-hero[style*="background-image"] .eyebrow { color: rgba(255,255,255,.8); }
+.landing-hero[style*="background-image"] h1 { color: #fff; text-shadow: 0 2px 8px rgba(0,0,0,.3); }
+.landing-hero[style*="background-image"] .progress-card { background-color: rgba(255,255,255,.15); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,.2); }
+.landing-hero[style*="background-image"] .progress-card b { color: #fff; }
+.landing-hero[style*="background-image"] .progress-card small { color: rgba(255,255,255,.8); }
+.landing-hero[style*="background-image"] .progress-ring span { background-color: rgba(0,0,0,.6); color: #fff; }

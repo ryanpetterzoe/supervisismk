@@ -12,6 +12,8 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
     $accentColor = $_POST['accent_color'] ?? '#7c3aed';
     $appName = $_POST['app_name'] ?? 'Supervisi Akademik';
     $banner = safe_upload_image('banner', 'banner_landing', $identity['banner_path'] ?? '');
+    // Preserve existing banner if no new file uploaded
+    if(!$banner && ($identity['banner_path'] ?? '')) $banner = $identity['banner_path'];
     $landingTitle = $_POST['landing_title'] ?? '';
     $landingSubtitle = $_POST['landing_subtitle'] ?? '';
     $landingCta = $_POST['landing_cta_text'] ?? 'Masuk Sistem';

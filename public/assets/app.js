@@ -1,133 +1,77 @@
-/**
- * Supervisi Akademik SMK — app.js v12
- * Theme toggle | Hamburger sidebar | Active nav | Table wrap | Alerts
- */
-(function () {
+(function(){
   'use strict';
-
-  var THEME_KEY = 'smk_theme';
-  var html = document.documentElement;
-
-  /* ── 1. THEME ── */
-  function getSystemTheme() {
-    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  var KEY='smk_theme', html=document.documentElement;
+  
+  function getTheme(){
+    var s; try{s=localStorage.getItem(KEY);}catch(e){}
+    if(s==='dark'||s==='light') return s;
+    return window.matchMedia&&window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
   }
-
-  function applyTheme(theme) {
-    html.setAttribute('data-theme', theme);
-    try { localStorage.setItem(THEME_KEY, theme); } catch(e) {}
-    var btn  = document.getElementById('themeToggle');
-    var icon = btn && (btn.querySelector('.theme-icon') || btn);
-    if (icon) icon.textContent = theme === 'dark' ? '☀️' : '🌙';
-    if (btn)  btn.title = theme === 'dark' ? 'Mode Terang' : 'Mode Gelap';
-  }
-
-  function initTheme() {
-    var saved;
-    try { saved = localStorage.getItem(THEME_KEY); } catch(e) {}
-    applyTheme(saved === 'dark' || saved === 'light' ? saved : getSystemTheme());
-  }
-
-  // Run IMMEDIATELY — before DOM renders — to prevent flash
-  initTheme();
-
-  /* ── 2. SIDEBAR ── */
-  function openSidebar()  { document.body.classList.add('sidebar-open'); }
-  function closeSidebar() { document.body.classList.remove('sidebar-open'); }
-  function isMobile()     { return window.innerWidth <= 768; }
-
-  /* ── 3. ACTIVE NAV ── */
-  function markActiveNav() {
-    var file = (window.location.pathname.split('/').pop() || 'index.php').split('?')[0] || 'index.php';
-    document.querySelectorAll('.sidebar .nav-link, .sidebar nav a').forEach(function (a) {
-      var href = (a.getAttribute('href') || '').split('/').pop().split('?')[0];
-      if (href && href === file) {
-        a.classList.add('active');
-        // Remove active from siblings (avoid duplicates)
-      }
-    });
-  }
-
-  /* ── 4. TABLE WRAP ── */
-  function wrapTables() {
-    document.querySelectorAll('table').forEach(function (tbl) {
-      if (tbl.closest('.table-wrap')) return;
-      var wrap = document.createElement('div');
-      wrap.className = 'table-wrap';
-      tbl.parentNode.insertBefore(wrap, tbl);
-      wrap.appendChild(tbl);
-    });
-  }
-
-  /* ── 5. AUTO-DISMISS ALERTS ── */
-  function autoDismissAlerts() {
-    document.querySelectorAll('.alert').forEach(function (el) {
-      setTimeout(function () {
-        el.style.transition = 'opacity 0.5s ease, max-height 0.5s ease, padding 0.5s ease, margin 0.5s ease';
-        el.style.opacity = '0';
-        el.style.maxHeight = '0';
-        el.style.padding = '0';
-        el.style.margin = '0';
-        el.style.overflow = 'hidden';
-      }, 5000);
-    });
-  }
-
-  /* ── 6. DOM READY ── */
-  document.addEventListener('DOMContentLoaded', function () {
-
-    // Theme toggle button
-    var themeBtn = document.getElementById('themeToggle');
-    if (themeBtn) {
-      // Sync icon with current theme (already set by initTheme)
-      var cur = html.getAttribute('data-theme') || 'light';
-      var icon = themeBtn.querySelector('.theme-icon') || themeBtn;
-      icon.textContent = cur === 'dark' ? '☀️' : '🌙';
-      themeBtn.title    = cur === 'dark' ? 'Mode Terang' : 'Mode Gelap';
-
-      themeBtn.addEventListener('click', function () {
-        applyTheme(html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
-      });
+  
+  function apply(t){
+    html.setAttribute('data-theme',t);
+    try{localStorage.setItem(KEY,t);}catch(e){}
+    var btn=document.getElementById('themeToggle');
+    if(btn){
+      var icon=btn.querySelector('.theme-icon')||btn;
+      icon.textContent=t==='dark'?'☀️':'🌙';
     }
-
-    // Hamburger
-    var hamburger = document.getElementById('hamburgerBtn');
-    if (hamburger) {
-      hamburger.addEventListener('click', function () {
-        document.body.classList.contains('sidebar-open') ? closeSidebar() : openSidebar();
-      });
-    }
-
-    // Overlay click
-    var overlay = document.querySelector('#sidebarOverlay, .sidebar-overlay');
-    if (overlay) overlay.addEventListener('click', closeSidebar);
-
-    // Sidebar close btn
-    var closeBtn = document.querySelector('#sidebarClose, .sidebar-close');
-    if (closeBtn) closeBtn.addEventListener('click', closeSidebar);
-
-    // Close sidebar on nav click (mobile)
-    document.querySelectorAll('.sidebar .nav-link, .sidebar nav a').forEach(function (a) {
-      a.addEventListener('click', function () { if (isMobile()) closeSidebar(); });
+  }
+  
+  // Apply immediately to prevent flash
+  apply(getTheme());
+  
+  document.addEventListener('DOMContentLoaded',function(){
+    // Theme toggle
+    var btn=document.getElementById('themeToggle');
+    if(btn) btn.addEventListener('click',function(){
+      apply(html.getAttribute('data-theme')==='dark'?'light':'dark');
     });
-
-    markActiveNav();
-    wrapTables();
-    autoDismissAlerts();
+    
+    // Hamburger sidebar
+    var ham=document.getElementById('hamburgerBtn');
+    if(ham) ham.addEventListener('click',function(){
+      document.body.classList.toggle('sidebar-open');
+    });
+    
+    // Overlay close
+    var ov=document.querySelector('.sidebar-overlay');
+    if(ov) ov.addEventListener('click',function(){document.body.classList.remove('sidebar-open');});
+    
+    // Close button
+    var cl=document.querySelector('.sidebar-close');
+    if(cl) cl.addEventListener('click',function(){document.body.classList.remove('sidebar-open');});
+    
+    // Active nav
+    var file=(location.pathname.split('/').pop()||'index.php').split('?')[0];
+    document.querySelectorAll('.nav-link,.sidebar nav a').forEach(function(a){
+      var h=(a.getAttribute('href')||'').split('/').pop().split('?')[0];
+      if(h&&h===file) a.classList.add('active');
+    });
+    
+    // Table wrap
+    document.querySelectorAll('table').forEach(function(t){
+      if(t.closest('.table-wrap')) return;
+      var w=document.createElement('div');
+      w.className='table-wrap';
+      t.parentNode.insertBefore(w,t);
+      w.appendChild(t);
+    });
+    
+    // Auto-dismiss alerts
+    document.querySelectorAll('.alert').forEach(function(el){
+      setTimeout(function(){el.style.opacity='0';el.style.maxHeight='0';el.style.padding='0';el.style.margin='0';el.style.overflow='hidden';},5000);
+    });
+    
+    // Resize
+    window.addEventListener('resize',function(){
+      if(window.innerWidth>768) document.body.classList.remove('sidebar-open');
+    });
   });
-
-  /* ── 7. CONFIRM DIALOG ── */
-  document.addEventListener('click', function (e) {
-    var el = e.target.closest('[data-confirm]');
-    if (el && !confirm(el.getAttribute('data-confirm') || 'Yakin?')) {
-      e.preventDefault();
-      e.stopPropagation();
-    }
+  
+  // Confirm
+  document.addEventListener('click',function(e){
+    var t=e.target.closest('[data-confirm]');
+    if(t&&!confirm(t.getAttribute('data-confirm')||'Yakin?')){e.preventDefault();}
   });
-
-  /* ── 8. RESIZE HANDLER ── */
-  window.addEventListener('resize', function () {
-    if (!isMobile()) closeSidebar();
-  });
-
 })();

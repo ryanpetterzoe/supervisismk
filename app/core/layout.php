@@ -1,6 +1,6 @@
 <?php
 /**
- * layout.php — Supervisi Akademik SMK v12
+ * layout.php — Supervisi Akademik SMK v13
  * render_header() / render_footer()
  */
 
@@ -45,7 +45,6 @@ function render_header($title = 'Dashboard') {
   <title><?= e($title) ?> – <?= e($school['school_name'] ?: cfg('app_name')) ?></title>
   <link rel="stylesheet" href="<?= url('assets/style.css') ?>">
   <script>
-    /* ── Anti-flash: apply saved theme before page renders ── */
     (function(){
       var t;
       try { t = localStorage.getItem('smk_theme'); } catch(e){}

@@ -1049,3 +1049,19 @@ tbody tr:hover td { background: var(--surface2); }
 }
 .empty-state .empty-icon { font-size: 48px; margin-bottom: 12px; opacity: 0.5; }
 .empty-state p { font-size: 15px; color: var(--text3); }
+
+
+/* ── DARK MODE: Landing page ── */
+[data-theme="dark"] .landing-body {
+  background: linear-gradient(135deg, #020817 0%, #0c1a40 50%, #1e0a40 100%);
+}
+[data-theme="dark"] .landing-nav {
+  background: rgba(2,8,23,0.85);
+}
+[data-theme="dark"] .progress-ring span {
+  background: #0f172a;
+}
+
+/* ── LOGIN: theme toggle positioning ── */
+.login-wrap { position: relative; }
+.login-card { position: relative; }

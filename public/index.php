@@ -13,12 +13,27 @@ if(!is_logged_in()){
     $pct = $stats['jadwal'] ? round(($stats['selesai']/$stats['jadwal'])*100) : 0;
     $downloadCards = instrument_downloads(true);
 ?>
-<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title><?= e($school['school_name']) ?> - Supervisi Akademik</title><link rel="stylesheet" href="<?= url('assets/style.css') ?>"></head>
+<!doctype html>
+<html lang="id" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title><?= e($school['school_name']) ?> - Supervisi Akademik</title>
+<link rel="stylesheet" href="<?= url('assets/style.css') ?>">
+<script>
+(function(){
+  var t;try{t=localStorage.getItem('smk_theme');}catch(e){}
+  if(t!=='dark'&&t!=='light'){t=(window.matchMedia&&window.matchMedia('(prefers-color-scheme:dark)').matches)?'dark':'light';}
+  document.documentElement.setAttribute('data-theme',t);
+})();
+</script>
+</head>
 <body class="landing-body">
-<nav class="landing-nav"><a class="landing-brand" href="<?= url('index.php') ?>" title="Beranda"><?php if($logo): ?><img src="<?= e($logo) ?>" alt="Logo"><?php else: ?><b>SG</b><?php endif; ?><span><?= e($school['school_name'] ?: 'Supervisi Akademik') ?></span></a><a class="btn small" href="login.php">Login</a></nav>
+<nav class="landing-nav"><a class="landing-brand" href="<?= url('index.php') ?>" title="Beranda"><?php if($logo): ?><img src="<?= e($logo) ?>" alt="Logo"><?php else: ?><b>SG</b><?php endif; ?><span><?= e($school['school_name'] ?: 'Supervisi Akademik') ?></span></a><div style="display:flex;align-items:center;gap:10px"><button class="theme-toggle" id="themeToggle" title="Toggle tema"><span class="theme-icon">🌙</span></button><a class="btn small" href="login.php">Login</a></div></nav>
 <section class="landing-hero"><div><p class="eyebrow">Aplikasi Supervisi Akademik Guru SMK</p><h1>Monitoring supervisi, instrumen, dan laporan dalam satu dashboard.</h1><div class="landing-actions"><a class="btn" href="login.php">Masuk Sistem</a><a class="btn secondary" href="#instrumen">Download Instrumen</a></div></div><div class="progress-card"><div class="progress-ring" style="--pct:<?= $pct ?>"><span><?= $pct ?>%</span></div><b>Progres Pelaksanaan</b><small><?= $stats['selesai'] ?> dari <?= $stats['jadwal'] ?> jadwal selesai</small></div></section>
 <section class="landing-stats"><div><b><?= $stats['guru'] ?></b><span>Guru</span></div><div><b><?= $stats['jadwal'] ?></b><span>Jadwal</span></div><div><b><?= $stats['observasi'] ?></b><span>Observasi</span></div><div><b><?= $stats['instrumen'] ?></b><span>Instrumen</span></div></section>
 <section id="instrumen" class="landing-section"><h2>Download Instrumen Supervisi</h2><div class="download-grid"><?php foreach($downloadCards as $card): ?><a class="download-tile file-card clean-card" href="instrument_file_download.php?id=<?= $card['id'] ?>"><b><?= e($card['title']) ?></b><span><?= e($card['description'] ?: 'Klik untuk mengunduh instrumen supervisi.') ?></span></a><?php endforeach; ?><?php if(!$downloadCards): ?><div class="empty-download"><b>Belum ada instrumen yang diupload.</b><span>Silakan upload instrumen terlebih dahulu.</span></div><?php endif; ?></div></section>
+<script src="<?= url('assets/app.js') ?>"></script>
 </body></html>
 <?php exit; }
 require_login(); render_header('Dashboard');

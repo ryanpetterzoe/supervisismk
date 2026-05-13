@@ -347,11 +347,22 @@ tr:hover td { background-color: var(--primary-light); }
 }
 
 
-/* ══ LANDING HERO WITH BANNER ══ */
-.landing-hero[style*="background-image"] { border-radius: 0; }
-.landing-hero[style*="background-image"] .eyebrow { color: rgba(255,255,255,.8); }
-.landing-hero[style*="background-image"] h1 { color: #fff; text-shadow: 0 2px 8px rgba(0,0,0,.3); }
-.landing-hero[style*="background-image"] .progress-card { background-color: rgba(255,255,255,.15); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,.2); }
-.landing-hero[style*="background-image"] .progress-card b { color: #fff; }
-.landing-hero[style*="background-image"] .progress-card small { color: rgba(255,255,255,.8); }
-.landing-hero[style*="background-image"] .progress-ring span { background-color: rgba(0,0,0,.6); color: #fff; }
+/* ══ LANDING HERO — ALWAYS READABLE (white text on gradient/banner) ══ */
+/* Without banner: use primary→accent gradient so text is always white */
+.landing-hero {
+  background: linear-gradient(135deg, var(--primary, #2563eb), var(--accent, #7c3aed)) !important;
+  color: #fff !important;
+}
+.landing-hero .eyebrow { color: rgba(255,255,255,.85) !important; }
+.landing-hero h1 { color: #fff !important; text-shadow: 0 2px 12px rgba(0,0,0,.3); }
+.landing-hero p { color: rgba(255,255,255,.8) !important; }
+.landing-hero .btn.secondary { background-color: rgba(255,255,255,.15); border-color: rgba(255,255,255,.3); color: #fff; }
+.landing-hero .btn.secondary:hover { background-color: rgba(255,255,255,.25); }
+.landing-hero .progress-card { background-color: rgba(255,255,255,.12); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,.2); }
+.landing-hero .progress-card b { color: #fff; }
+.landing-hero .progress-card small { color: rgba(255,255,255,.75); }
+.landing-hero .progress-ring span { background-color: rgba(0,0,0,.5); color: #fff; }
+
+/* With banner image: the inline style already has overlay gradient, just enhance text shadow */
+.landing-hero[style*="background-image"] { background: none !important; }
+.landing-hero[style*="background-image"] h1 { text-shadow: 0 3px 20px rgba(0,0,0,.5); }

@@ -48,7 +48,7 @@ body{background-color:var(--bg);color:var(--text);transition:background-color .2
 </nav>
 
 <!-- Hero Section with optional banner -->
-<section class="landing-hero" style="<?php if($school['banner_path'] ?? ''): ?>background-image:linear-gradient(rgba(0,0,0,0.65),rgba(0,0,0,0.75)),url('<?= e(public_file_url($school['banner_path'])) ?>');background-size:cover;background-position:center<?php else: ?>background:linear-gradient(135deg,<?= e($school['header_color'] ?? '#2563eb') ?>,<?= e($school['accent_color'] ?? '#7c3aed') ?>)<?php endif; ?>;color:#fff;min-height:340px">
+<section class="landing-hero" style="<?php if($school['banner_path'] ?? ''): ?>background-image:linear-gradient(rgba(0,0,0,0.6),rgba(0,0,0,0.7)),url('<?= e(url($school['banner_path'])) ?>');background-size:cover;background-position:center<?php else: ?>background:linear-gradient(135deg,<?= e($school['header_color'] ?? '#2563eb') ?>,<?= e($school['accent_color'] ?? '#7c3aed') ?>)<?php endif; ?>;color:#fff;min-height:340px">
   <div>
     <p class="eyebrow" style="color:#fff;font-weight:700;text-shadow:0 1px 6px rgba(0,0,0,.5)"><?= e($school['landing_subtitle'] ?? 'Aplikasi Supervisi Akademik Guru SMK') ?></p>
     <h1 style="color:#fff;text-shadow:0 3px 20px rgba(0,0,0,.7)"><?= e($school['landing_title'] ?? 'Monitoring supervisi, instrumen, dan laporan dalam satu dashboard.') ?></h1>

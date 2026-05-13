@@ -11,7 +11,7 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
     $headerColor = $_POST['header_color'] ?? '#2563eb';
     $accentColor = $_POST['accent_color'] ?? '#7c3aed';
     $appName = $_POST['app_name'] ?? 'Supervisi Akademik';
-    $banner = safe_upload_image('banner', 'banner_landing', $identity['banner_path'] ?? '');
+    $banner = safe_upload_banner('banner', $identity['banner_path'] ?? '');
     $landingTitle = $_POST['landing_title'] ?? '';
     $landingSubtitle = $_POST['landing_subtitle'] ?? '';
     $landingCta = $_POST['landing_cta_text'] ?? 'Masuk Sistem';
@@ -55,7 +55,7 @@ render_header('Identitas Sekolah');
         </div>
       </div>
       <div style="grid-column:1/-1"><hr style="border:none;border-top:2px solid var(--border);margin:12px 0"><h3 style="margin:8px 0;font-size:16px">🖼️ Pengaturan Landing Page</h3><p class="muted" style="margin:0 0 8px">Banner dan teks yang tampil di halaman utama (sebelum login)</p></div>
-      <div style="grid-column:1/-1"><label>Banner / Gambar Hero</label><?php if($identity['banner_path'] ?? ''): ?><img src="<?= e(public_file_url($identity['banner_path'])) ?>" alt="Banner" style="max-width:100%;max-height:120px;object-fit:cover;border-radius:8px;margin-bottom:8px"><?php endif; ?><input type="file" name="banner" accept="image/*"><small class="muted">Gambar lebar untuk hero section. Rekomendasi: 1200x400px</small></div>
+      <div style="grid-column:1/-1"><label>Banner / Gambar Hero</label><?php if($identity['banner_path'] ?? ''): ?><img src="<?= e(url($identity['banner_path'])) ?>" alt="Banner" style="max-width:100%;max-height:120px;object-fit:cover;border-radius:8px;margin-bottom:8px"><?php endif; ?><input type="file" name="banner" accept="image/*"><small class="muted">Gambar lebar untuk hero section. Rekomendasi: 1200x400px</small></div>
       <div><label>Subtitle Landing (teks kecil atas)</label><input name="landing_subtitle" value="<?= e($identity['landing_subtitle'] ?? 'Aplikasi Supervisi Akademik Guru SMK') ?>" placeholder="Aplikasi Supervisi Akademik Guru SMK"></div>
       <div><label>Judul Landing (teks besar)</label><input name="landing_title" value="<?= e($identity['landing_title'] ?? 'Monitoring supervisi, instrumen, dan laporan dalam satu dashboard.') ?>" placeholder="Judul utama landing page"></div>
       <div><label>Teks Tombol CTA</label><input name="landing_cta_text" value="<?= e($identity['landing_cta_text'] ?? 'Masuk Sistem') ?>" placeholder="Masuk Sistem"></div>

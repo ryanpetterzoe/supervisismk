@@ -187,6 +187,24 @@ function safe_upload_image($field, $prefix, $oldPath=''){
     return $rel;
 }
 
+function safe_upload_banner($field, $oldPath=''){
+    if(empty($_FILES[$field]['name'])) return $oldPath;
+    if(($_FILES[$field]['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_OK) return $oldPath;
+    $ext=strtolower(pathinfo($_FILES[$field]['name'], PATHINFO_EXTENSION));
+    $allowed=['jpg','jpeg','png','gif','webp'];
+    if(!in_array($ext,$allowed,true)) return $oldPath;
+    if(($_FILES[$field]['size'] ?? 0) > 10*1024*1024) return $oldPath;
+    // Save inside public/uploads/ so it's directly accessible via browser
+    $dir=ROOT_PATH.'/public/uploads/'; 
+    if(!is_dir($dir)) mkdir($dir,0775,true);
+    $name='banner_'.date('YmdHis').'_'.bin2hex(random_bytes(4)).'.'.$ext;
+    if(!move_uploaded_file($_FILES[$field]['tmp_name'], $dir.$name)) return $oldPath;
+    // Delete old banner if exists
+    if($oldPath && file_exists(ROOT_PATH.'/public/'.$oldPath)) @unlink(ROOT_PATH.'/public/'.$oldPath);
+    // Return path relative to public/ folder
+    return 'uploads/'.$name;
+}
+
 
 function format_bytes_id($bytes){
     $bytes=(int)$bytes;

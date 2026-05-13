@@ -37,11 +37,11 @@ function render_header($title = 'Dashboard') {
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title><?= e($title) ?> – <?= e($school['school_name'] ?: cfg('app_name')) ?></title>
+<title><?= e($title) ?> – <?= e($school['app_name'] ?? $school['school_name'] ?: cfg('app_name')) ?></title>
 <?php /* INLINE critical dark theme - this ALWAYS works regardless of external CSS cache */ ?>
 <style>
-:root{--bg:#f1f5f9;--surface:#fff;--surface2:#f8fafc;--text:#0f172a;--text2:#334155;--text3:#64748b;--border:#e2e8f0;--primary:#2563eb;--primary-light:#eff6ff}
-[data-theme="dark"],html.dark{--bg:#0f172a;--surface:#1e293b;--surface2:#1a2540;--text:#f1f5f9;--text2:#cbd5e1;--text3:#94a3b8;--border:#2d3f55;--primary:#3b82f6;--primary-light:#1e3a5e}
+:root{--bg:#f1f5f9;--surface:#fff;--surface2:#f8fafc;--text:#0f172a;--text2:#334155;--text3:#64748b;--border:#e2e8f0;--primary:<?= e($school['header_color'] ?? '#2563eb') ?>;--accent:<?= e($school['accent_color'] ?? '#7c3aed') ?>;--primary-light:#eff6ff}
+[data-theme="dark"],html.dark{--bg:#0f172a;--surface:#1e293b;--surface2:#1a2540;--text:#f1f5f9;--text2:#cbd5e1;--text3:#94a3b8;--border:#2d3f55;--primary:<?= e($school['header_color'] ?? '#3b82f6') ?>;--accent:<?= e($school['accent_color'] ?? '#a78bfa') ?>;--primary-light:#1e3a5e}
 body{background-color:var(--bg);color:var(--text);transition:background-color .2s,color .2s}
 </style>
 <script>
@@ -71,7 +71,7 @@ body{background-color:var(--bg);color:var(--text);transition:background-color .2
       </div>
       <div class="brand-text">
         <strong><?= e($school['school_name'] ?: 'Supervisi Guru') ?></strong>
-        <span>SMK Kurikulum Merdeka</span>
+        <span><?= e($school['app_name'] ?? 'Supervisi Akademik') ?></span>
       </div>
     </a>
     <button class="sidebar-close" aria-label="Tutup">✕</button>

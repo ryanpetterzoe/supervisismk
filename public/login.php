@@ -1,6 +1,8 @@
 <?php
 require_once __DIR__.'/_init.php';
 if(is_logged_in()) redirect('index.php');
+$school = school_identity();
+$logoUrl = public_file_url($school['logo_path'] ?? '');
 $error='';
 if($_SERVER['REQUEST_METHOD']==='POST'){
     $st=app_query("SELECT * FROM users WHERE username=? AND active=1", [$_POST['username'] ?? '']);
@@ -15,10 +17,10 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Login – Supervisi Akademik</title>
+<title>Login – <?= e($school['school_name'] ?: 'Supervisi Akademik') ?></title>
 <style>
-:root{--bg:#f1f5f9;--surface:#fff;--surface2:#f8fafc;--text:#0f172a;--text2:#334155;--text3:#64748b;--border:#e2e8f0;--primary:#2563eb;--primary-light:#eff6ff}
-[data-theme="dark"],html.dark{--bg:#0f172a;--surface:#1e293b;--surface2:#1a2540;--text:#f1f5f9;--text2:#cbd5e1;--text3:#94a3b8;--border:#2d3f55;--primary:#3b82f6;--primary-light:#1e3a5e}
+:root{--bg:#f1f5f9;--surface:#fff;--surface2:#f8fafc;--text:#0f172a;--text2:#334155;--text3:#64748b;--border:#e2e8f0;--primary:<?= e($school['header_color'] ?? '#2563eb') ?>;--accent:<?= e($school['accent_color'] ?? '#7c3aed') ?>;--primary-light:#eff6ff}
+[data-theme="dark"],html.dark{--bg:#0f172a;--surface:#1e293b;--surface2:#1a2540;--text:#f1f5f9;--text2:#cbd5e1;--text3:#94a3b8;--border:#2d3f55;--primary:<?= e($school['header_color'] ?? '#3b82f6') ?>;--accent:<?= e($school['accent_color'] ?? '#a78bfa') ?>;--primary-light:#1e3a5e}
 body{background-color:var(--bg);color:var(--text);transition:background-color .2s,color .2s}
 </style>
 <script>
@@ -36,9 +38,13 @@ body{background-color:var(--bg);color:var(--text);transition:background-color .2
 <div class="login-wrap">
   <div class="login-card">
     <button class="theme-toggle" id="themeToggle" type="button" title="Toggle Tema" style="position:absolute;top:16px;right:16px"><span class="theme-icon">🌙</span></button>
-    <div class="login-logo">🏫</div>
-    <h2>Supervisi Guru SMK</h2>
-    <p class="login-sub">Kurikulum Merdeka — Masuk untuk melanjutkan</p>
+    <?php if($logoUrl): ?>
+      <div style="text-align:center;margin-bottom:12px"><img src="<?= e($logoUrl) ?>" alt="Logo" style="width:64px;height:64px;object-fit:contain;margin:0 auto;border-radius:12px"></div>
+    <?php else: ?>
+      <div class="login-logo">🏫</div>
+    <?php endif; ?>
+    <h2><?= e($school['school_name'] ?: 'Supervisi Guru SMK') ?></h2>
+    <p class="login-sub"><?= e($school['app_name'] ?? 'Supervisi Akademik') ?> — Masuk untuk melanjutkan</p>
     <?php if($error): ?><div class="alert error"><?= e($error) ?></div><?php endif; ?>
     <form method="post" class="form">
       <div><label>Username</label><input name="username" autofocus required placeholder="Masukkan username"></div>

@@ -1,104 +1,66 @@
 /**
- * Supervisi Akademik SMK — app.js
- * Features: dark/light theme, hamburger sidebar, active nav, table wrap, confirm, auto-dismiss alert
+ * Supervisi Akademik SMK — app.js v12
+ * Theme toggle | Hamburger sidebar | Active nav | Table wrap | Alerts
  */
 (function () {
   'use strict';
 
-  /* ── 1. THEME TOGGLE ── */
-  var THEME_KEY = 'theme';
+  var THEME_KEY = 'smk_theme';
   var html = document.documentElement;
+
+  /* ── 1. THEME ── */
+  function getSystemTheme() {
+    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
 
   function applyTheme(theme) {
     html.setAttribute('data-theme', theme);
-    localStorage.setItem(THEME_KEY, theme);
-    updateThemeIcon(theme);
-  }
-
-  function updateThemeIcon(theme) {
-    var btn = document.getElementById('themeToggle');
-    if (!btn) return;
-    var icon = btn.querySelector('.theme-icon') || btn;
-    icon.textContent = theme === 'dark' ? '\u2600\uFE0F' : '\uD83C\uDF19';
-    btn.setAttribute('title', theme === 'dark' ? 'Ganti ke mode terang' : 'Ganti ke mode gelap');
-  }
-
-  function getCurrentTheme() {
-    return html.getAttribute('data-theme') || 'light';
+    try { localStorage.setItem(THEME_KEY, theme); } catch(e) {}
+    var btn  = document.getElementById('themeToggle');
+    var icon = btn && (btn.querySelector('.theme-icon') || btn);
+    if (icon) icon.textContent = theme === 'dark' ? '☀️' : '🌙';
+    if (btn)  btn.title = theme === 'dark' ? 'Mode Terang' : 'Mode Gelap';
   }
 
   function initTheme() {
-    var saved = localStorage.getItem(THEME_KEY);
-    var theme = (saved === 'dark' || saved === 'light')
-      ? saved
-      : (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-    applyTheme(theme);
+    var saved;
+    try { saved = localStorage.getItem(THEME_KEY); } catch(e) {}
+    applyTheme(saved === 'dark' || saved === 'light' ? saved : getSystemTheme());
   }
 
-  // Run immediately to prevent flash
+  // Run IMMEDIATELY — before DOM renders — to prevent flash
   initTheme();
 
   /* ── 2. SIDEBAR ── */
   function openSidebar()  { document.body.classList.add('sidebar-open'); }
   function closeSidebar() { document.body.classList.remove('sidebar-open'); }
+  function isMobile()     { return window.innerWidth <= 768; }
 
   /* ── 3. ACTIVE NAV ── */
-  function setActiveNavLink() {
-    var currentFile = (window.location.pathname.split('/').pop() || 'index.php').split('?')[0];
-    document.querySelectorAll('.nav-link, .sidebar nav a').forEach(function (link) {
-      var linkFile = (link.getAttribute('href') || '').split('/').pop().split('?')[0];
-      if (linkFile && linkFile === currentFile) link.classList.add('active');
+  function markActiveNav() {
+    var file = (window.location.pathname.split('/').pop() || 'index.php').split('?')[0] || 'index.php';
+    document.querySelectorAll('.sidebar .nav-link, .sidebar nav a').forEach(function (a) {
+      var href = (a.getAttribute('href') || '').split('/').pop().split('?')[0];
+      if (href && href === file) {
+        a.classList.add('active');
+        // Remove active from siblings (avoid duplicates)
+      }
     });
   }
 
   /* ── 4. TABLE WRAP ── */
   function wrapTables() {
-    document.querySelectorAll('table').forEach(function (table) {
-      if (table.parentElement && table.parentElement.classList.contains('table-wrap')) return;
-      var wrapper = document.createElement('div');
-      wrapper.className = 'table-wrap';
-      table.parentNode.insertBefore(wrapper, table);
-      wrapper.appendChild(table);
+    document.querySelectorAll('table').forEach(function (tbl) {
+      if (tbl.closest('.table-wrap')) return;
+      var wrap = document.createElement('div');
+      wrap.className = 'table-wrap';
+      tbl.parentNode.insertBefore(wrap, tbl);
+      wrap.appendChild(tbl);
     });
   }
 
-  /* ── 5. DOM READY ── */
-  document.addEventListener('DOMContentLoaded', function () {
-
-    // Theme button
-    var themeBtn = document.getElementById('themeToggle');
-    if (themeBtn) {
-      updateThemeIcon(getCurrentTheme());
-      themeBtn.addEventListener('click', function () {
-        applyTheme(getCurrentTheme() === 'dark' ? 'light' : 'dark');
-      });
-    }
-
-    // Hamburger
-    var hamburger = document.getElementById('hamburgerBtn');
-    if (hamburger) hamburger.addEventListener('click', function () {
-      document.body.classList.contains('sidebar-open') ? closeSidebar() : openSidebar();
-    });
-
-    // Overlay
-    var overlay = document.getElementById('sidebarOverlay') || document.querySelector('.sidebar-overlay');
-    if (overlay) overlay.addEventListener('click', closeSidebar);
-
-    // Close button
-    var closeBtn = document.getElementById('sidebarClose') || document.querySelector('.sidebar-close');
-    if (closeBtn) closeBtn.addEventListener('click', closeSidebar);
-
-    // Auto-close sidebar on nav click (mobile)
-    document.querySelectorAll('.sidebar .nav-link, .sidebar nav a').forEach(function (link) {
-      link.addEventListener('click', function () {
-        if (window.innerWidth <= 768) closeSidebar();
-      });
-    });
-
-    setActiveNavLink();
-    wrapTables();
-
-    // Auto-dismiss alerts after 5s
+  /* ── 5. AUTO-DISMISS ALERTS ── */
+  function autoDismissAlerts() {
     document.querySelectorAll('.alert').forEach(function (el) {
       setTimeout(function () {
         el.style.transition = 'opacity 0.5s ease, max-height 0.5s ease, padding 0.5s ease, margin 0.5s ease';
@@ -109,22 +71,63 @@
         el.style.overflow = 'hidden';
       }, 5000);
     });
+  }
+
+  /* ── 6. DOM READY ── */
+  document.addEventListener('DOMContentLoaded', function () {
+
+    // Theme toggle button
+    var themeBtn = document.getElementById('themeToggle');
+    if (themeBtn) {
+      // Sync icon with current theme (already set by initTheme)
+      var cur = html.getAttribute('data-theme') || 'light';
+      var icon = themeBtn.querySelector('.theme-icon') || themeBtn;
+      icon.textContent = cur === 'dark' ? '☀️' : '🌙';
+      themeBtn.title    = cur === 'dark' ? 'Mode Terang' : 'Mode Gelap';
+
+      themeBtn.addEventListener('click', function () {
+        applyTheme(html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+      });
+    }
+
+    // Hamburger
+    var hamburger = document.getElementById('hamburgerBtn');
+    if (hamburger) {
+      hamburger.addEventListener('click', function () {
+        document.body.classList.contains('sidebar-open') ? closeSidebar() : openSidebar();
+      });
+    }
+
+    // Overlay click
+    var overlay = document.querySelector('#sidebarOverlay, .sidebar-overlay');
+    if (overlay) overlay.addEventListener('click', closeSidebar);
+
+    // Sidebar close btn
+    var closeBtn = document.querySelector('#sidebarClose, .sidebar-close');
+    if (closeBtn) closeBtn.addEventListener('click', closeSidebar);
+
+    // Close sidebar on nav click (mobile)
+    document.querySelectorAll('.sidebar .nav-link, .sidebar nav a').forEach(function (a) {
+      a.addEventListener('click', function () { if (isMobile()) closeSidebar(); });
+    });
+
+    markActiveNav();
+    wrapTables();
+    autoDismissAlerts();
   });
 
-  /* ── 6. CONFIRM DIALOG ── */
+  /* ── 7. CONFIRM DIALOG ── */
   document.addEventListener('click', function (e) {
-    var target = e.target.closest('[data-confirm]');
-    if (target) {
-      if (!confirm(target.getAttribute('data-confirm') || 'Apakah Anda yakin?')) {
-        e.preventDefault();
-        e.stopPropagation();
-      }
+    var el = e.target.closest('[data-confirm]');
+    if (el && !confirm(el.getAttribute('data-confirm') || 'Yakin?')) {
+      e.preventDefault();
+      e.stopPropagation();
     }
   });
 
-  /* ── 7. RESIZE: close sidebar on desktop ── */
+  /* ── 8. RESIZE HANDLER ── */
   window.addEventListener('resize', function () {
-    if (window.innerWidth > 768) closeSidebar();
+    if (!isMobile()) closeSidebar();
   });
 
 })();

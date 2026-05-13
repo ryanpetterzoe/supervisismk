@@ -11,11 +11,16 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
     $headerColor = $_POST['header_color'] ?? '#2563eb';
     $accentColor = $_POST['accent_color'] ?? '#7c3aed';
     $appName = $_POST['app_name'] ?? 'Supervisi Akademik';
-    app_query("UPDATE school_identity SET school_name=?, npsn=?, address=?, phone=?, email=?, website=?, logo_path=?, principal_name=?, principal_nip=?, principal_signature_path=?, supervisor_name=?, supervisor_nip=?, supervisor_signature_path=?, city=?, header_color=?, accent_color=?, app_name=? WHERE id=1", [
+    $banner = safe_upload_image('banner', 'banner_landing', $identity['banner_path'] ?? '');
+    $landingTitle = $_POST['landing_title'] ?? '';
+    $landingSubtitle = $_POST['landing_subtitle'] ?? '';
+    $landingCta = $_POST['landing_cta_text'] ?? 'Masuk Sistem';
+    $landingFooter = $_POST['landing_footer_text'] ?? '';
+    app_query("UPDATE school_identity SET school_name=?, npsn=?, address=?, phone=?, email=?, website=?, logo_path=?, principal_name=?, principal_nip=?, principal_signature_path=?, supervisor_name=?, supervisor_nip=?, supervisor_signature_path=?, city=?, header_color=?, accent_color=?, app_name=?, banner_path=?, landing_title=?, landing_subtitle=?, landing_cta_text=?, landing_footer_text=? WHERE id=1", [
         $_POST['school_name'], $_POST['npsn'], $_POST['address'], $_POST['phone'], $_POST['email'], $_POST['website'], $logo,
         $_POST['principal_name'], $_POST['principal_nip'], $principalSignature,
         $_POST['supervisor_name'], $_POST['supervisor_nip'], $supervisorSignature,
-        $_POST['city'], $headerColor, $accentColor, $appName
+        $_POST['city'], $headerColor, $accentColor, $appName, $banner, $landingTitle, $landingSubtitle, $landingCta, $landingFooter
     ]);
     flash('success','Identitas sekolah berhasil disimpan dan disinkronkan ke aplikasi/laporan.');
     redirect('school_identity.php');
@@ -49,6 +54,12 @@ render_header('Identitas Sekolah');
           <div style="text-align:center"><span style="display:block;width:90px;height:30px;border-radius:6px;background:linear-gradient(135deg,<?= e($identity['header_color'] ?? '#2563eb') ?>,<?= e($identity['accent_color'] ?? '#7c3aed') ?>)"></span><small class="muted">Gradient</small></div>
         </div>
       </div>
+      <div style="grid-column:1/-1"><hr style="border:none;border-top:2px solid var(--border);margin:12px 0"><h3 style="margin:8px 0;font-size:16px">🖼️ Pengaturan Landing Page</h3><p class="muted" style="margin:0 0 8px">Banner dan teks yang tampil di halaman utama (sebelum login)</p></div>
+      <div style="grid-column:1/-1"><label>Banner / Gambar Hero</label><?php if($identity['banner_path'] ?? ''): ?><img src="<?= e(public_file_url($identity['banner_path'])) ?>" alt="Banner" style="max-width:100%;max-height:120px;object-fit:cover;border-radius:8px;margin-bottom:8px"><?php endif; ?><input type="file" name="banner" accept="image/*"><small class="muted">Gambar lebar untuk hero section. Rekomendasi: 1200x400px</small></div>
+      <div><label>Subtitle Landing (teks kecil atas)</label><input name="landing_subtitle" value="<?= e($identity['landing_subtitle'] ?? 'Aplikasi Supervisi Akademik Guru SMK') ?>" placeholder="Aplikasi Supervisi Akademik Guru SMK"></div>
+      <div><label>Judul Landing (teks besar)</label><input name="landing_title" value="<?= e($identity['landing_title'] ?? 'Monitoring supervisi, instrumen, dan laporan dalam satu dashboard.') ?>" placeholder="Judul utama landing page"></div>
+      <div><label>Teks Tombol CTA</label><input name="landing_cta_text" value="<?= e($identity['landing_cta_text'] ?? 'Masuk Sistem') ?>" placeholder="Masuk Sistem"></div>
+      <div><label>Teks Footer Landing</label><input name="landing_footer_text" value="<?= e($identity['landing_footer_text'] ?? '') ?>" placeholder="Opsional: copyright atau info tambahan"></div>
       <div style="grid-column:1/-1"><hr style="border:none;border-top:2px solid var(--border);margin:12px 0"></div>
       <div><label>Logo Sekolah / Aplikasi</label><?php if($identity['logo_path']): ?><span class="school-logo-preview-box"><img class="school-logo-current" src="<?= e(public_file_url($identity['logo_path'])) ?>" alt="Logo saat ini" width="84" height="84" style="display:block;width:84px!important;height:84px!important;max-width:84px!important;max-height:84px!important;object-fit:contain!important;"></span><?php endif; ?><input type="file" name="logo" accept="image/*"><small class="muted">Logo otomatis diperkecil tampilannya di aplikasi dan kop surat.</small></div>
       <div><label>Nama Kepala Sekolah</label><input name="principal_name" value="<?= e($identity['principal_name']) ?>"></div>

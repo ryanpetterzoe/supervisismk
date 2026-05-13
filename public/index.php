@@ -19,21 +19,28 @@ if(!is_logged_in()){
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title><?= e($school['school_name']) ?> - Supervisi Akademik</title>
-<link rel="stylesheet" href="<?= url('assets/style.css') ?>">
+<style>
+:root{--bg:#f1f5f9;--surface:#fff;--surface2:#f8fafc;--text:#0f172a;--text2:#334155;--text3:#64748b;--border:#e2e8f0;--primary:#2563eb;--primary-light:#eff6ff}
+[data-theme="dark"],html.dark{--bg:#0f172a;--surface:#1e293b;--surface2:#1a2540;--text:#f1f5f9;--text2:#cbd5e1;--text3:#94a3b8;--border:#2d3f55;--primary:#3b82f6;--primary-light:#1e3a5e}
+body{background-color:var(--bg);color:var(--text);transition:background-color .2s,color .2s}
+</style>
 <script>
 (function(){
-  var t;try{t=localStorage.getItem('smk_theme');}catch(e){}
-  if(t!=='dark'&&t!=='light'){t=(window.matchMedia&&window.matchMedia('(prefers-color-scheme:dark)').matches)?'dark':'light';}
-  document.documentElement.setAttribute('data-theme',t);
+  var k='smk_theme',h=document.documentElement,t;
+  try{t=localStorage.getItem(k)}catch(e){}
+  if(t!=='dark'&&t!=='light') t=(window.matchMedia&&window.matchMedia('(prefers-color-scheme:dark)').matches)?'dark':'light';
+  h.setAttribute('data-theme',t);
+  h.className=t;
 })();
 </script>
+<link rel="stylesheet" href="<?= url('assets/style.css') ?>?v=14">
 </head>
 <body class="landing-body">
 <nav class="landing-nav"><a class="landing-brand" href="<?= url('index.php') ?>" title="Beranda"><?php if($logo): ?><img src="<?= e($logo) ?>" alt="Logo"><?php else: ?><b>SG</b><?php endif; ?><span><?= e($school['school_name'] ?: 'Supervisi Akademik') ?></span></a><div style="display:flex;align-items:center;gap:10px"><button class="theme-toggle" id="themeToggle" title="Toggle tema"><span class="theme-icon">🌙</span></button><a class="btn small" href="login.php">Login</a></div></nav>
 <section class="landing-hero"><div><p class="eyebrow">Aplikasi Supervisi Akademik Guru SMK</p><h1>Monitoring supervisi, instrumen, dan laporan dalam satu dashboard.</h1><div class="landing-actions"><a class="btn" href="login.php">Masuk Sistem</a><a class="btn secondary" href="#instrumen">Download Instrumen</a></div></div><div class="progress-card"><div class="progress-ring" style="--pct:<?= $pct ?>"><span><?= $pct ?>%</span></div><b>Progres Pelaksanaan</b><small><?= $stats['selesai'] ?> dari <?= $stats['jadwal'] ?> jadwal selesai</small></div></section>
 <section class="landing-stats"><div><b><?= $stats['guru'] ?></b><span>Guru</span></div><div><b><?= $stats['jadwal'] ?></b><span>Jadwal</span></div><div><b><?= $stats['observasi'] ?></b><span>Observasi</span></div><div><b><?= $stats['instrumen'] ?></b><span>Instrumen</span></div></section>
 <section id="instrumen" class="landing-section"><h2>Download Instrumen Supervisi</h2><div class="download-grid"><?php foreach($downloadCards as $card): ?><a class="download-tile file-card clean-card" href="instrument_file_download.php?id=<?= $card['id'] ?>"><b><?= e($card['title']) ?></b><span><?= e($card['description'] ?: 'Klik untuk mengunduh instrumen supervisi.') ?></span></a><?php endforeach; ?><?php if(!$downloadCards): ?><div class="empty-download"><b>Belum ada instrumen yang diupload.</b><span>Silakan upload instrumen terlebih dahulu.</span></div><?php endif; ?></div></section>
-<script src="<?= url('assets/app.js') ?>"></script>
+<script src="<?= url('assets/app.js') ?>?v=14"></script>
 </body></html>
 <?php exit; }
 require_login(); render_header('Dashboard');

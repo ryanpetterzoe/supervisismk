@@ -91,6 +91,10 @@ function ensure_app_schema(){
             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
         try { db()->exec("ALTER TABLE documents ADD COLUMN instrument_id INT NULL AFTER teacher_id"); } catch(Throwable $e) {}
+        // v14: color & branding customization
+        try { db()->exec("ALTER TABLE school_identity ADD COLUMN header_color VARCHAR(20) NULL DEFAULT '#2563eb'"); } catch(Throwable $e) {}
+        try { db()->exec("ALTER TABLE school_identity ADD COLUMN accent_color VARCHAR(20) NULL DEFAULT '#7c3aed'"); } catch(Throwable $e) {}
+        try { db()->exec("ALTER TABLE school_identity ADD COLUMN app_name VARCHAR(120) NULL DEFAULT 'Supervisi Akademik'"); } catch(Throwable $e) {}
 
         db()->exec("CREATE TABLE IF NOT EXISTS instrument_downloads (
             id INT AUTO_INCREMENT PRIMARY KEY,

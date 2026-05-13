@@ -48,8 +48,12 @@ body{background-color:var(--bg);color:var(--text);transition:background-color .2
 </nav>
 
 <!-- Hero Section with optional banner -->
-<section class="landing-hero" style="<?php if($school['banner_path'] ?? ''): ?>background-image:linear-gradient(rgba(0,0,0,0.6),rgba(0,0,0,0.7)),url('<?= e(url($school['banner_path'])) ?>');background-size:cover;background-position:center<?php else: ?>background:linear-gradient(135deg,<?= e($school['header_color'] ?? '#2563eb') ?>,<?= e($school['accent_color'] ?? '#7c3aed') ?>)<?php endif; ?>;color:#fff;min-height:340px">
-  <div>
+<section class="landing-hero" style="position:relative;overflow:hidden;background:linear-gradient(135deg,<?= e($school['header_color'] ?? '#2563eb') ?>,<?= e($school['accent_color'] ?? '#7c3aed') ?>);color:#fff;min-height:340px">
+  <?php if($school['banner_path'] ?? ''): ?>
+  <img src="<?= e(url($school['banner_path'])) ?>" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0">
+  <div style="position:absolute;inset:0;background:rgba(0,0,0,0.6);z-index:1"></div>
+  <?php endif; ?>
+  <div style="position:relative;z-index:2">
     <p class="eyebrow" style="color:#fff;font-weight:700;text-shadow:0 1px 6px rgba(0,0,0,.5)"><?= e($school['landing_subtitle'] ?? 'Aplikasi Supervisi Akademik Guru SMK') ?></p>
     <h1 style="color:#fff;text-shadow:0 3px 20px rgba(0,0,0,.7)"><?= e($school['landing_title'] ?? 'Monitoring supervisi, instrumen, dan laporan dalam satu dashboard.') ?></h1>
     <div class="landing-actions">
@@ -57,7 +61,7 @@ body{background-color:var(--bg);color:var(--text);transition:background-color .2
       <a class="btn secondary large" href="#instrumen">Download Instrumen</a>
     </div>
   </div>
-  <div class="progress-card">
+  <div class="progress-card" style="position:relative;z-index:2">
     <div class="progress-ring" style="--pct:<?= $pct ?>"><span><?= $pct ?>%</span></div>
     <b>Progres Pelaksanaan</b>
     <small><?= $stats['selesai'] ?> dari <?= $stats['jadwal'] ?> jadwal selesai</small>
